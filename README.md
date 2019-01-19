@@ -1,2 +1,2 @@
 # android-vuex-pattern
-Pattern inspired from Vuex (from Vue.js) for Android
+Pattern inspired by Vuex from Vue.js (similar to Flux, Redux or Elm) for Android

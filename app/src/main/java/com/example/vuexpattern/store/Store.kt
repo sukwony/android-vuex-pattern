@@ -8,10 +8,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class Store @Inject constructor(val state: State, private val mutations: Mutations) {
+class Store @Inject constructor(val state: State) {
+    private val uiThread = Looper.getMainLooper().thread
+
     private val handler = object: Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
-            val mutation = mutations.entries[msg.what]!!
+            val mutation = mutations[msg.what]!!
 
             Log.d("Store", mutation.type)
 
@@ -20,8 +22,12 @@ class Store @Inject constructor(val state: State, private val mutations: Mutatio
     }
 
     fun commit(type: Int, payload: Any) {
-        handler.obtainMessage(type, payload).apply {
-            sendToTarget()
+        if (uiThread == Thread.currentThread()) {
+            mutations[type]!!.handler(state, payload)
+        } else {
+            handler.obtainMessage(type, payload).apply {
+                sendToTarget()
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ import com.example.vuexpattern.store.MutationType
 class MainViewModel: ViewModel() {
     private val store = Dagger.component.store()
 
-    val count = store.state.countLiveData
+    val state = store.state
 
     fun increment() {
         store.commit(MutationType.INCREMENT, 2)

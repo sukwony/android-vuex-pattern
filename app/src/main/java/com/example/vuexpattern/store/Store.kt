@@ -13,7 +13,7 @@ class Store @Inject constructor(val state: State) {
 
     private val handler = object: Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
-            val mutation = mutations[msg.what]!!
+            val mutation = mutations.getValue(msg.what)
 
             Log.d("Store", mutation.type)
 
@@ -23,7 +23,7 @@ class Store @Inject constructor(val state: State) {
 
     fun commit(type: Int, payload: Any) {
         if (uiThread == Thread.currentThread()) {
-            mutations[type]!!.handler(state, payload)
+            mutations.getValue(type).handler(state, payload)
         } else {
             handler.obtainMessage(type, payload).apply {
                 sendToTarget()
